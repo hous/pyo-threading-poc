@@ -9,7 +9,7 @@ class Audio(object):
 
     def play_test_sound(self):
         def sound():
-            print "play_background().sound() called"
+            # blatant plaigarism from jmdumas' jm_Kraut.py from https://github.com/tiagovaz/radiopyo
             krautbeat = pyo.Seq(time=0.3,seq=[2,2,2,2,2,2,2,2,2,1,2,2,2,2,2,2,2,3,2,2,2,2,2,1,1,1,6],poly=1)
             krauttable = pyo.LinTable([(0,0.0000),(6,0.8325),(236,0.0000),(1417,0.0000),(8192,0.0000)])
             krautenv = pyo.TrigEnv(krautbeat, table=krauttable, dur=1.5, mul=0.7).mix(1)
@@ -25,11 +25,15 @@ class Audio(object):
             krautbeat.play()
             krautrev.out()
             time.sleep(5)
+            # TODO: is there a syntax to play the beat indefinitely using PYO? Without having to do time.sleep?
 
         self.background_thread = threading.Thread(target=sound)
         self.background_thread.start()
 
     def kill(self):
         self.server.stop()
+
+        # Give portmidi a second to shut down.
         time.sleep(1)
+
         self.server.shutdown()
